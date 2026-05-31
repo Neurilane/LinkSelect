@@ -7,6 +7,7 @@ import { collection, addDoc, onSnapshot, query, orderBy } from 'firebase/firesto
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
 import { db } from '../config/firebase';
+import { enviarNotificacao } from '../config/notifications';
 
 export default function ChamadosScreen() {
   const [chamados, setChamados] = useState([]);
@@ -62,6 +63,7 @@ export default function ChamadosScreen() {
   async function salvarChamado() {
     if (!titulo || !descricao) {
       Alert.alert('Atenção', 'Preencha título e descrição.');
+      await enviarNotificacao('Novo Chamado Aberto! 🎫', `Chamado "${titulo}" foi registrado com sucesso.`);
       return;
     }
     setSalvando(true);

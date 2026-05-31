@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from './config/firebase';
+import { registrarNotificacoes } from './config/notifications';
 import LoginScreen from './screens/LoginScreen';
 import CadastroScreen from './screens/CadastroScreen';
 import HomeScreen from './screens/HomeScreen';
@@ -18,6 +19,7 @@ import ClienteHomeScreen from './screens/ClienteHomeScreen';
 import ClienteChamadosScreen from './screens/ClienteChamadosScreen';
 import ClienteFaturasScreen from './screens/ClienteFaturasScreen';
 import LibrasScreen from './screens/LibrasScreen';
+import ChatbotScreen from './screens/ChatbotScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -82,6 +84,9 @@ function ClienteNavigator({ usuario }) {
       <Tab.Screen name="Libras" options={{ tabBarLabel: 'Libras',
         tabBarIcon: ({ color }) => <Ionicons name="hand-left-outline" size={22} color={color} /> }}
         component={LibrasScreen} />
+      <Tab.Screen name="Chatbot" options={{ tabBarLabel: 'Suporte',
+        tabBarIcon: ({ color }) => <Ionicons name="chatbox-ellipses-outline" size={22} color={color} /> }}
+        component={ChatbotScreen} />
       <Tab.Screen name="ConfigCliente" options={{ tabBarLabel: 'Config',
         tabBarIcon: ({ color }) => <Ionicons name="settings-outline" size={22} color={color} /> }}
         component={ConfigScreen} />
@@ -95,6 +100,8 @@ export default function App() {
   const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
+    registrarNotificacoes();
+
     const unsub = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setUsuario(user);
