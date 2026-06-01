@@ -69,17 +69,32 @@ function ClienteNavigator({ usuario }) {
         tabBarLabelStyle: { fontSize: 11 },
       }}
     >
-      <Tab.Screen name="Inicio" options={{ tabBarLabel: 'Início',
-        tabBarIcon: ({ color }) => <Ionicons name="home-outline" size={22} color={color} /> }}>
-        {() => <ClienteHomeScreen usuario={usuario} />}
+      <Tab.Screen
+        name="Inicio"
+        options={{
+          tabBarLabel: 'Início',
+          tabBarIcon: ({ color }) => <Ionicons name="home-outline" size={22} color={color} />
+        }}
+      >
+        {(props) => <ClienteHomeScreen {...props} usuario={usuario} />}
       </Tab.Screen>
-      <Tab.Screen name="MeusChamados" options={{ tabBarLabel: 'Chamados',
-        tabBarIcon: ({ color }) => <Ionicons name="chatbubble-outline" size={22} color={color} /> }}>
-        {() => <ClienteChamadosScreen usuario={usuario} />}
+      <Tab.Screen
+        name="MeusChamados"
+        options={{
+          tabBarLabel: 'Chamados',
+          tabBarIcon: ({ color }) => <Ionicons name="chatbubble-outline" size={22} color={color} />
+        }}
+      >
+        {(props) => <ClienteChamadosScreen {...props} usuario={usuario} />}
       </Tab.Screen>
-      <Tab.Screen name="MinhasFaturas" options={{ tabBarLabel: 'Faturas',
-        tabBarIcon: ({ color }) => <Ionicons name="document-text-outline" size={22} color={color} /> }}>
-        {() => <ClienteFaturasScreen usuario={usuario} />}
+      <Tab.Screen
+        name="MinhasFaturas"
+        options={{
+          tabBarLabel: 'Faturas',
+          tabBarIcon: ({ color }) => <Ionicons name="document-text-outline" size={22} color={color} />
+        }}
+      >
+        {(props) => <ClienteFaturasScreen {...props} usuario={usuario} />}
       </Tab.Screen>
       <Tab.Screen name="Libras" options={{ tabBarLabel: 'Libras',
         tabBarIcon: ({ color }) => <Ionicons name="hand-left-outline" size={22} color={color} /> }}

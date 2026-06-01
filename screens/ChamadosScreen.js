@@ -6,8 +6,11 @@ import {
 import { collection, addDoc, onSnapshot, query, orderBy } from 'firebase/firestore';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
+import NetInfo from '@react-native-community/netinfo';
 import { db } from '../config/firebase';
 import { enviarNotificacao } from '../config/notifications';
+import { salvarChamadoOffline } from '../config/database';
+import { sincronizarDados } from '../config/sync';
 
 export default function ChamadosScreen() {
   const [chamados, setChamados] = useState([]);
@@ -27,6 +30,7 @@ export default function ChamadosScreen() {
     const unsub = onSnapshot(q, snap => {
       setChamados(snap.docs.map(d => ({ id: d.id, ...d.data() })));
     });
+    sincronizarDados();
     return unsub;
   }, []);
 
@@ -63,21 +67,31 @@ export default function ChamadosScreen() {
   async function salvarChamado() {
     if (!titulo || !descricao) {
       Alert.alert('Atenção', 'Preencha título e descrição.');
-      await enviarNotificacao('Novo Chamado Aberto! 🎫', `Chamado "${titulo}" foi registrado com sucesso.`);
       return;
     }
     setSalvando(true);
     try {
-      await addDoc(collection(db, 'chamados'), {
-        titulo, descricao, tipo, status: 'Aberto',
-        temFoto: foto ? true : false,
-        localizacao: localizacao || null,
-        dataCriacao: new Date()
-      });
-      setTitulo(''); setDescricao(''); setTipo('Queda de sinal');
-      setFoto(null); setLocalizacao(null);
-      setMostrarForm(false);
-      Alert.alert('Sucesso!', 'Chamado aberto!');
+      const state = await NetInfo.fetch();
+      if (state.isConnected) {
+        await addDoc(collection(db, 'chamados'), {
+          titulo, descricao, tipo, status: 'Aberto',
+          temFoto: foto ? true : false,
+          localizacao: localizacao || null,
+          dataCriacao: new Date()
+        });
+        await sincronizarDados();
+        setTitulo(''); setDescricao(''); setTipo('Queda de sinal');
+        setFoto(null); setLocalizacao(null);
+        setMostrarForm(false);
+        Alert.alert('Sucesso!', 'Chamado aberto!');
+        await enviarNotificacao('Novo Chamado Aberto! 🎫', `Chamado "${titulo}" foi registrado com sucesso.`);
+      } else {
+        await salvarChamadoOffline({ titulo, descricao, tipo });
+        setTitulo(''); setDescricao(''); setTipo('Queda de sinal');
+        setFoto(null); setLocalizacao(null);
+        setMostrarForm(false);
+        Alert.alert('Sem internet! 📴', 'Chamado salvo localmente. Será sincronizado quando conectar!');
+      }
     } catch (e) {
       Alert.alert('Erro', 'Não foi possível salvar.');
     }

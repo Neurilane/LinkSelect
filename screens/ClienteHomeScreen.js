@@ -4,7 +4,7 @@ import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
 import { auth, db } from '../config/firebase';
 
-export default function ClienteHomeScreen({ usuario }) {
+export default function ClienteHomeScreen({ usuario, navigation }) {
   const [chamadosAbertos, setChamadosAbertos] = useState(0);
   const [faturasVencidas, setFaturasVencidas] = useState(0);
   const [ultimosChamados, setUltimosChamados] = useState([]);
@@ -82,8 +82,7 @@ export default function ClienteHomeScreen({ usuario }) {
         ))
       )}
 
-      {/* Botão Libras */}
-      <TouchableOpacity style={styles.librasBtn}>
+      <TouchableOpacity style={styles.librasBtn} onPress={() => navigation.navigate('Libras')}>
         <Text style={styles.librasBtnTexto}>🤟 Ajuda em Libras</Text>
       </TouchableOpacity>
     </ScrollView>
