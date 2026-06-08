@@ -4,7 +4,7 @@ import {
   StyleSheet, FlatList, ActivityIndicator, KeyboardAvoidingView, Platform
 } from 'react-native';
 
-const GROQ_API_KEY = 'SUA_CHAVE_GROQ_AQUI';
+const GROQ_API_KEY = 'Sgsk_9hn1s77Dg5tNe33zcN53WGdyb3FYyMsX95kNJoorAgzHAVqcxfye';
 
 export default function ChatbotScreen() {
   const [mensagens, setMensagens] = useState([
